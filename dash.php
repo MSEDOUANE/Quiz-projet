@@ -1,3 +1,6 @@
+<?php
+  include 'connection.php';
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -13,7 +16,122 @@
 
   <script src="js/bootstrap.min.js"  type="text/javascript"></script>
  	<link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+  <script >
+    
+     
+  //alert (dataString);return false;
+
+
+        $(function() {
+          $form = $('.form')
+       console.log("success")
+                         $form.on('submit', function (e) {
+                e.preventDefault();
+                var $me = $(this);
+               
+               // validate and process form here
+                    $.ajax({
+                        type: "POST",
+                        url: "send.php",
+                        data:$me.serialize() ,
+                        success: function() {
+                          console.log("success")
+                        $form.trigger('reset');
+
+                        }
+                      });
+                
+                return false;
+            });
+ 
+  });
+
+</script>
+  <script >
+    function ajax(){
+      var req = new XMLHttpRequest();
+      req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200){
+          document.getElementById('chat').innerHTML = req.responseText; 
+        }
+      }
+      req.open('GET','chat.php',true);
+      req.send();
+    }
+    setInterval(function() {ajax()}, 5000);
+  </script>
+  <style>
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup chat - hidden by default */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  min-height: 200px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/send button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+</style>
 <script>
 $(function () {
     $(document).on( 'scroll', function(){
@@ -31,7 +149,7 @@ $(function () {
 });</script>
 </head>
 
-<body  style="background:#eee;">
+<body  style="background:#eee;" onload="ajax();">
 <div class="header">
 <div class="row">
 <div class="col-lg-6">
@@ -412,5 +530,51 @@ echo '</table></div></div>';
 
 </div><!--container closed-->
 </div></div>
+<button class="open-button" onclick="openForm()">Chat</button>
+
+<div class="chat-popup" id="myForm">
+
+    <h1>Chat</h1>
+
+    <label for="msg"><b>Message</b></label>
+
+    <div class="Chatroom">
+  <div class="ibox-content">
+        <div class="row">
+            <div style="margin-left: 10%;" class=" col-md-10">
+                <div class="chat-discussion">
+                    <div class="chat-message left">
+                        <div id="chat"></div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+  <div style="background-color:white;" class="row" >
+      <div style="margin-left: 20%;" class="col-md-8">
+      <form method="POST" class="form">
+        <div></div>
+        <input type="text" name="name" placeholder="Enter your name" hidden="" <?php echo "value=".$name ?> required="">
+        <textarea name="message" placeholder="Enter your message" required=""></textarea>
+        <input type="submit" style="color: white;" name="send" class="send" value="Send it"/>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+  </div>
+
+<script>
+function openForm() {
+  document.getElementById("myForm").style.display = "block";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
+</script>
 </body>
 </html>
